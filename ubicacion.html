@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocalizador</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript">
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        var lat = position.coords.latitude;
+                        var lon = position.coords.longitude;
+                        
+                        // Llama al objeto "conector" de Java
+                        // (Este objeto fue inyectado por tu código de JavaFX)
+                        window.conector.ubicacionEncontrada(lat, lon);
+                    },
+                    (error) => {
+                        var mensaje = "Error desconocido";
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                mensaje = "Permiso denegado. Revisa los permisos de ubicación de tu sistema.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                mensaje = "Información de ubicación no disponible (sin Wi-Fi o GPS).";
+                                break;
+                            case error.TIMEOUT:
+                                mensaje = "La petición de ubicación expiró.";
+                                break;
+                        }
+                        window.conector.ubicacionNoEncontrada(mensaje);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000, // 15 segundos de tiempo límite
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                window.conector.ubicacionNoEncontrada("La geolocalización no es soportada por este componente.");
+            }
+        }
+    </script>
+</head>
+<body>
+    </body>
+</html>
